@@ -1,0 +1,8 @@
+datasets
+hand
+mediapipe
+torch 
+torchvision
+opencv-python
+numpy
+pyautogui
