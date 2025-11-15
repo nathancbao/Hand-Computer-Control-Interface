@@ -66,7 +66,7 @@ def main():
                 cv.putText(image, gesture_name, (10, 30),
                            cv.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
-            # computer.perform_action(gesture_name)
+            computer.perform_action(gesture_name, palm_center)
             
         cv.imshow("Hand Gesture Control", image)
   
