@@ -16,15 +16,19 @@ computer = ComputerController()
 def process_image(image):
     hands = hand_tracker.get_landmarks(image)
     if not hands:
-        return image, None
+        return image, None, None, None
     
-    unprocessed_landmark_list = hands[0][0] # first hand's landmark list (unprocessed)
+    hand = hands[0]
     
+    unprocessed_landmark_list = hand["landmarks"]
+    draw_points = hand["draw_points"]
+    palm_center = hand["palm_center"]
+
     if SHOW_LANDMARKS:
-        hand_tracker.draw_landmarks(image, unprocessed_landmark_list)
+        hand_tracker.draw_landmarks(image, draw_points)
     
-    landmark_list = hand_tracker.preprocess_landmarks(unprocessed_landmark_list)
-    return image, landmark_list
+    processed_landmarks = hand_tracker.preprocess_landmarks(unprocessed_landmark_list)
+    return image, processed_landmarks, palm_center, hand
     
 
 def main():
@@ -44,21 +48,23 @@ def main():
         if not ret:
             print("Error: Cannot capture frame")
             return
+        
         image = cv.flip(frame, 1)
 
-        image, landmark_list = process_image(image)
+        image, landmark_list, palm_center, hand_info = process_image(image)
 
         if landmark_list:
             gesture_id = classifier(landmark_list)
             if not (0 <= gesture_id < NUM_GESTURES):
-                print("Error: Unknown Gesture")
-                return
+                cv.putText(image, "Unknown Gesture", (10, 30),
+                           cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+            else:
             
-            gesture = GESTURE_MAP[gesture_id]
-            gesture_name = gesture.value
+                gesture = GESTURE_MAP[gesture_id]
+                gesture_name = gesture.value
 
-            cv.putText(image, gesture_name, (10, 30), cv.FONT_HERSHEY_SIMPLEX
-                       , 1, (0, 255, 0), 2)
+                cv.putText(image, gesture_name, (10, 30),
+                           cv.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
             # computer.perform_action(gesture_name)
             
