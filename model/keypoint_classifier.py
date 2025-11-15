@@ -24,7 +24,7 @@ class KeyPointModel(nn.Module):
 class KeyPointClassifier:
     def __init__(self, num_classes):
         if os.path.exists(model_path):
-			# load model
+            # load model
             self.model = KeyPointModel(num_classes)
             state_dict = torch.load(model_path, map_location="cpu")
             self.model.load_state_dict(state_dict)

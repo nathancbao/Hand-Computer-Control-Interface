@@ -4,23 +4,26 @@ from gestures import Gesture, GESTURE_MAP
 from model.keypoint_classifier import KeyPointClassifier
 from computer_controller import ComputerController
 
+SHOW_LANDMARKS = True
+
 NUM_GESTURES = len(GESTURE_MAP)
 
 hand_tracker = HandTracker()
 classifier = KeyPointClassifier(NUM_GESTURES)
 computer = ComputerController()
+    
 
 def process_image(image):
-    hands_landmarks = hand_tracker.get_landmarks(image)
-    
-    if not hands_landmarks:
+    hands = hand_tracker.get_landmarks(image)
+    if not hands:
         return image, None
     
-    # for handedness, lm in hands_landmarks:
-    #     print(handedness, lm)
+    unprocessed_landmark_list = hands[0][0] # first hand's landmark list (unprocessed)
     
-    landmark_list = hands_landmarks[0][0] # first hand's landmark list
+    if SHOW_LANDMARKS:
+        hand_tracker.draw_landmarks(image, unprocessed_landmark_list)
     
+    landmark_list = hand_tracker.preprocess_landmarks(unprocessed_landmark_list)
     return image, landmark_list
     
 
@@ -54,7 +57,8 @@ def main():
             gesture = GESTURE_MAP[gesture_id]
             gesture_name = gesture.value
 
-            cv.putText(image, gesture_name, (10, 30), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+            cv.putText(image, gesture_name, (10, 30), cv.FONT_HERSHEY_SIMPLEX
+                       , 1, (0, 255, 0), 2)
 
             # computer.perform_action(gesture_name)
             

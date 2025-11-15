@@ -1,10 +1,7 @@
-hand
 mediapipe
-torch 
+torch
 torchvision
 opencv-python
 numpy
 pyautogui
 Pillow
-pygments
-itertools
