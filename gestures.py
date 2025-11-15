@@ -1,18 +1,19 @@
-from enum import Enum, auto
+from enum import Enum
 
+
+# Allowed gestures (string values used everywhere)
 class Gesture(Enum):
     FIST = "fist"
     POINT = "point"
     PEACE = "peace"
-    # THUMBS_UP = "thumbs_up"
-    # THUMBS_DOWN = "thumbs_down"
+    THUMBS_UP = "thumbs_up"
+    THUMBS_DOWN = "thumbs_down"
 
-GESTURE_MAP = list(Gesture)
 
-# GESTURE_INDEX = {
-#     Gesture.FIST,
-#     Gesture.POINT,
-#     Gesture.PEACE,
-#     Gesture.THUMBS_UP,
-#     Gesture.THUMBS_DOWN,
-# }
+# IMPORTANT:
+# The order in this list MUST MATCH the order used during training.
+GESTURE_MAP = [
+    Gesture.FIST,        # ID 0
+    Gesture.POINT,       # ID 1
+    Gesture.PEACE        # ID 2
+]
