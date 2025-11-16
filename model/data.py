@@ -56,7 +56,9 @@ def process_image(image, training_mode=False, debug_mode=True, number=None, mode
                                               results.multi_handedness):
 
             brect = calc_bounding_rect(debug_image, hand_landmarks)
-            landmark_list = calc_landmark_list(debug_image, hand_landmarks)
+            handedness_label = handedness.classification[0].label
+            landmark_list = calc_landmark_list(debug_image, hand_landmarks, handedness_label)
+
 
             # preprocess (normalize)
             pre_processed_landmark_list = pre_process_landmark(landmark_list)
@@ -176,14 +178,20 @@ def calc_bounding_rect(image, landmarks):
     return [x, y, x + w, y + h]
 
 
-def calc_landmark_list(image, landmarks):
+def calc_landmark_list(image, landmarks, handedness):
     image_width, image_height = image.shape[1], image.shape[0]
 
     points = []
     for lm in landmarks.landmark:
-        x = min(int(lm.x * image_width), image_width - 1)
-        y = min(int(lm.y * image_height), image_height - 1)
+        x = lm.x * image_width
+        y = lm.y * image_height
         points.append([x, y])
+
+    # Mirror LEFT hand → matches HandTracker
+    if handedness == "Left":
+        for lm in points:
+            lm[0] = image_width - lm[0]
+
     return points
 
 
