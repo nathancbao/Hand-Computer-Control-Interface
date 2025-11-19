@@ -22,9 +22,25 @@ MOBILE_DIMENSIONS = (720, 1080)
 OFFSET = 0  # Label offset for dataset expansion
 
 # Load classification labels ###########################################################
+keypoint_classifier_labels = []
 with open('model/dataset/label.csv', encoding='utf-8-sig') as f:
-    keypoint_classifier_labels = csv.reader(f)
-    keypoint_classifier_labels = [row[0] for row in keypoint_classifier_labels]
+    # keypoint_classifier_labels = csv.reader(f) PREVIOUS
+    reader = csv.reader(f)
+
+    # Added to comment out thumbs up/down (Our model only takes 3 gestures right now not 5 so we got to update that)
+    for row in reader:
+        # Skip empty lines
+        if not row:
+            continue
+
+        label = row[0].strip()
+
+        # Skip comments (# anything)
+        if label.startswith("#"):
+            continue
+
+        keypoint_classifier_labels.append(label)
+    # keypoint_classifier_labels = [row[0] for row in keypoint_classifier_labels] PREVIOUS
 # keypoint_classifier_labels = ["placeholder"]
 
 # Load model ###########################################################################
