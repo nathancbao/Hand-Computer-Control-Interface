@@ -12,48 +12,58 @@ class ComputerController:
         self.prev_x = None
         self.prev_y = None
     
-    def perform_action(self, gesture, palm_center):
+    def perform_action(self, gesture, palm_center, cam_w, cam_h):
 
-        # Move Cursor (POINT)
-        if gesture == "point" and palm_center:
+        if palm_center:
             cx, cy, cz = palm_center
-            screen_w, screen_h = pyautogui.size()
 
-            # Clamp into screen bounds
-            mouse_x = max(0, min(int(cx + 1), screen_w))
-            mouse_y = max(0, min(int(cy + 1), screen_h))
+            # Normalize hand position
+            rx = cx / cam_w
+            ry = cy / cam_h
+
+            # Map to screen coords
+            screen_w, screen_h = pyautogui.size()
+            mouse_x = int(rx * screen_w)
+            mouse_y = int(ry * screen_h)
 
             SMOOTHING = 0.25    # lower = smoother, higher = faster
-            DEADZONE = 3        # ignore tiny jitter
-            PREDICT = 0.15      # add a little forward prediction
+            DEADZONE = 2        # ignore tiny jitter
+            PREDICT = 0.12      # add a little forward prediction
 
-            # Smoothing
             if self.prev_x is not None:
-                mouse_x = int(self.prev_x * (1 - SMOOTHING) + mouse_x * SMOOTHING)
-                mouse_y = int(self.prev_y * (1 - SMOOTHING) + mouse_y* SMOOTHING)
+                dx = mouse_x - self.prev_x
+                dy = mouse_y - self.prev_y
 
-                # Deadzone: ignore tiny noise
-                if abs(mouse_x - self.prev_x) < DEADZONE and abs(mouse_y - self.prev_y) < DEADZONE:
+                # Deadzone removes tiny tremors
+                if abs(dx) < DEADZONE and abs(dy) < DEADZONE:
                     return
-                
-                # Prediction: make movement feel snappy
-                mouse_x = int(mouse_x + (mouse_x - self.prev_x) * PREDICT)
-                mouse_y = int(mouse_y + (mouse_y - self.prev_y) * PREDICT)
+
+                # Smooth movement
+                mouse_x = int(self.prev_x * (1-SMOOTHING) + mouse_x * SMOOTHING)
+                mouse_y = int(self.prev_y * (1-SMOOTHING) + mouse_y * SMOOTHING)
+
+                # Add predictive motion
+                mouse_x += int(dx * PREDICT)
+                mouse_y += int(dy * PREDICT)
 
             pyautogui.moveTo(mouse_x, mouse_y)
-            self.prev_x, self.prev_y = mouse_x, mouse_y
 
-        # Left Click (PEACE)
-        if gesture == "peace":
+            self.prev_x = mouse_x
+            self.prev_y = mouse_y
+
+        # Hold Left Click (POINT)
+        if gesture == "point":
             if not self.left_down:
                 pyautogui.mouseDown(button='left')
                 self.left_down = True
-        else:
-            if self.left_down:
-                pyautogui.mouseUp(button='left')
-                self.left_down = False
 
-        # Neutral (FIST)
+        # Hold Right Click (PEACE)
+        if gesture == "peace":
+            if not self.right_down:
+                pyautogui.mouseDown(button='right')
+                self.right_down = True
+
+        # Neutral, Release Everything (FIST)
         if gesture == "fist":
             self.prev_x = None  # reset smoothing
 

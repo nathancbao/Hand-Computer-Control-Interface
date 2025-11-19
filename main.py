@@ -51,6 +51,9 @@ def main():
         
         image = cv.flip(frame, 1)
 
+        # Get camera resolution for ratio mapping
+        h, w, _ = image.shape
+
         image, landmark_list, palm_center, hand_info = process_image(image)
 
         if landmark_list:
@@ -66,7 +69,7 @@ def main():
                 cv.putText(image, gesture_name, (10, 30),
                            cv.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
-            computer.perform_action(gesture_name, palm_center)
+            computer.perform_action(gesture_name, palm_center, w, h)
             
         cv.imshow("Hand Gesture Control", image)
   
