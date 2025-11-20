@@ -34,6 +34,6 @@ GESTURE_MAP = [
     Gesture.FIST,        # ID 0
     Gesture.POINT,       # ID 1
     Gesture.PEACE,       # ID 2
-    # Gesture.THUMBS_UP,   # ID 3
-    # Gesture.THUMBS_DOWN, # ID 4
+    Gesture.THUMBS_UP,   # ID 3
+    Gesture.THUMBS_DOWN, # ID 4
 ]
