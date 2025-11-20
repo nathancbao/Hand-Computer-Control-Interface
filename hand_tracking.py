@@ -58,9 +58,9 @@ class HandTracker:
 
             proc_list = [lm.copy() for lm in raw_list]
 
-            if handedness_label == "Left":
-                for lm in proc_list:
-                    lm[0] = w - lm[0]
+            # if handedness_label == "Left":
+            #     for lm in proc_list:
+            #         lm[0] = w - lm[0]
 
             palm_ids = [0, 5, 9, 13, 17]
             palm_pts = [proc_list[i] for i in palm_ids]

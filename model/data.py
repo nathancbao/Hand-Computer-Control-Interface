@@ -201,12 +201,12 @@ def calc_landmark_list(image, landmarks, handedness):
     for lm in landmarks.landmark:
         x = lm.x * image_width
         y = lm.y * image_height
-        points.append([x, y])
+        points.append([int(x), int(y)])
 
     # Mirror LEFT hand → matches HandTracker
-    if handedness == "Left":
-        for lm in points:
-            lm[0] = image_width - lm[0]
+    # if handedness == "Left":
+    #     for lm in points:
+    #         lm[0] = image_width - lm[0]
 
     return points
 

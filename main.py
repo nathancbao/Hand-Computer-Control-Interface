@@ -73,6 +73,7 @@ def main():
             
         cv.imshow("Hand Gesture Control", image)
   
+    computer.stop_all_actions()
     cap.release()
     cv.destroyAllWindows()
 

@@ -65,18 +65,21 @@ class ComputerController:
 
         # Neutral, Release Everything (FIST)
         if gesture == "fist":
-            self.prev_x = None  # reset smoothing
-
-            if self.left_down:
-                pyautogui.mouseUp(button='left')
-                self.left_down = False
-
-            if self.right_down:
-                pyautogui.mouseUp(button='right')
-                self.right_down = False
+            self.stop_all_actions()
 
         # Scroll (THUMBS_UP / THUMBS_DOWN)
         if gesture == "thumbs_up":
             pyautogui.scroll(40)
         elif gesture == "thumbs_down":
             pyautogui.scroll(-40)
+    
+    def stop_all_actions(self):
+        self.prev_x = None  # reset smoothing
+
+        if self.left_down:
+            pyautogui.mouseUp(button='left')
+            self.left_down = False
+
+        if self.right_down:
+            pyautogui.mouseUp(button='right')
+            self.right_down = False
