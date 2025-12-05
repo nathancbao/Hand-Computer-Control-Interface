@@ -1,9 +1,11 @@
 import cv2 as cv
+import win32gui, win32con
 from hand_tracking import HandTracker
 from gestures import Gesture, GESTURE_MAP
 from model.keypoint_classifier import KeyPointClassifier
 from computer_controller import ComputerController
 
+WINDOW_NAME = "Hand Gesture Control"
 SHOW_LANDMARKS = True
 
 NUM_GESTURES = len(GESTURE_MAP)
@@ -11,8 +13,17 @@ NUM_GESTURES = len(GESTURE_MAP)
 hand_tracker = HandTracker()
 classifier = KeyPointClassifier(NUM_GESTURES)
 computer = ComputerController()
-    
 
+def make_window_always_on_top(window_name="Hand Gesture Control"):
+    hwnd = win32gui.FindWindow(None, window_name)
+    if hwnd:
+        win32gui.SetWindowPos(
+            hwnd,
+            win32con.HWND_TOPMOST,
+            0, 0, 0, 0,
+            win32con.SWP_NOMOVE | win32con.SWP_NOSIZE
+        )
+    
 def process_image(image):
     hands = hand_tracker.get_landmarks(image)
     if not hands:
@@ -71,7 +82,8 @@ def main():
 
             computer.perform_action(gesture_name, palm_center, w, h)
             
-        cv.imshow("Hand Gesture Control", image)
+        cv.imshow(WINDOW_NAME, image)
+        make_window_always_on_top(WINDOW_NAME)
   
     computer.stop_all_actions()
     cap.release()
