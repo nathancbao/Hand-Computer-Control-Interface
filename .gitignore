@@ -1,0 +1,22 @@
+# --- Python virtual environments ---
+.venv/
+.venv312/
+venv/
+env/
+
+# --- Python cache / build ---
+__pycache__/
+*.py[cod]
+*.pyo
+
+# --- Jupyter ---
+.ipynb_checkpoints/
+
+# --- VS Code ---
+.vscode/
+
+# --- Large / generated artifacts for this project ---
+dataset/
+model/results/
+keypoint_model.pth
+*.npz

@@ -72,6 +72,18 @@ class ComputerController:
             pyautogui.scroll(40)
         elif gesture == "thumbs_down":
             pyautogui.scroll(-40)
+
+        #double left click
+        if gesture =="five":
+            if self.left_down:
+                pyautogui.mouseUp(button='left')
+                self.left_down = False
+            if self.right_down:
+                pyautogui.mouseUp(button='right')
+                self.right_down = False
+
+            # perform a double left click
+            pyautogui.click(button='left', clicks=2, interval=0.1)
     
     def stop_all_actions(self):
         self.prev_x = None  # reset smoothing

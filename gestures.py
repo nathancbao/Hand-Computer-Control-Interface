@@ -26,6 +26,7 @@ class Gesture(Enum):
     PEACE = "peace"
     THUMBS_UP = "thumbs_up"
     THUMBS_DOWN = "thumbs_down"
+    FIVE = "five"
 
 
 # IMPORTANT:
@@ -36,4 +37,5 @@ GESTURE_MAP = [
     Gesture.PEACE,       # ID 2
     Gesture.THUMBS_UP,   # ID 3
     Gesture.THUMBS_DOWN, # ID 4
+    Gesture.FIVE,        # ID 5
 ]

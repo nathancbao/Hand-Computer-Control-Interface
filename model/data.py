@@ -52,7 +52,7 @@ hands_detector = mp_hands.Hands(
     min_tracking_confidence=0.7,
 )
 NUM_CLASSES = len(keypoint_classifier_labels)
-keypoint_classifier = KeyPointClassifier(NUM_CLASSES)
+keypoint_classifier = KeyPointClassifier(NUM_CLASSES, load_weights=False)
 
 
 # =============== PROCESS IMAGE ==========================================================
