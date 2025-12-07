@@ -1,5 +1,6 @@
 import cv2 as cv
 import win32gui, win32con
+import keyboard
 from hand_tracking import HandTracker
 from gestures import Gesture, GESTURE_MAP
 from model.keypoint_classifier import KeyPointClassifier
@@ -49,6 +50,18 @@ def main():
         print("Error:  open camera")
         return 
     
+    mode_name = "ABSOLUTE (Desktop)"  # Default mode
+    
+    # Create resizable window
+    cv.namedWindow(WINDOW_NAME, cv.WINDOW_NORMAL)
+    
+    # Global hotkey handler for toggling mode
+    def on_r_key():
+        nonlocal mode_name
+        mode_name = computer.toggle_mode()
+    
+    keyboard.add_hotkey('alt+r', on_r_key)
+    
     while True:
         key = cv.waitKey(10)
         if key == 27: # ESC key
@@ -81,10 +94,17 @@ def main():
                            cv.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
 
             computer.perform_action(gesture_name, palm_center, w, h)
+        
+        # Display current mode
+        cv.putText(image, f"Mode: {mode_name}", (10, h - 20),
+                   cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 0), 2)
+        cv.putText(image, "Press 'R' to toggle", (10, h - 50),
+                   cv.FONT_HERSHEY_SIMPLEX, 0.5, (200, 200, 200), 1)
             
         cv.imshow(WINDOW_NAME, image)
         make_window_always_on_top(WINDOW_NAME)
   
+    keyboard.remove_hotkey('alt+r')
     computer.stop_all_actions()
     cap.release()
     cv.destroyAllWindows()

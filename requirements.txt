@@ -4,4 +4,7 @@ torchvision
 opencv-python
 numpy
 pyautogui
+pydirectinput
+pywin32
+keyboard
 Pillow
