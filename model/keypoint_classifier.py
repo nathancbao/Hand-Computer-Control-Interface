@@ -9,10 +9,10 @@ class KeyPointModel(nn.Module):
         super().__init__()
         self.net = nn.Sequential(
             nn.Dropout(0.2),
-            nn.Linear(42, 20), # First fully-connected layer
-            nn.ReLU(), # Add non-linearity
+            nn.Linear(42, 20),
+            nn.ReLU(),
             nn.Dropout(0.4),
-            nn.Linear(20, 10), # Hidden Layer
+            nn.Linear(20, 10),
             nn.ReLU(),
             nn.Linear(10, num_classes)
         )
