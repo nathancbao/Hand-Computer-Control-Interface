@@ -51,22 +51,28 @@ def main():
         return 
     
     mode_name = "ABSOLUTE (Desktop)"  # Default mode
+    running = True  # Flag to control main loop
     
     # Create resizable window
     cv.namedWindow(WINDOW_NAME, cv.WINDOW_NORMAL)
     
     # Global hotkey handler for toggling mode
-    def on_r_key():
+    def on_toggle():
         nonlocal mode_name
         mode_name = computer.toggle_mode()
     
-    keyboard.add_hotkey('alt+r', on_r_key)
+    # Global hotkey handler for exiting
+    def on_quit():
+        nonlocal running
+        running = False
+        print("Exiting...")
     
-    while True:
-        key = cv.waitKey(10)
-        if key == 27: # ESC key
-            break
-        
+    keyboard.add_hotkey('alt+r', on_toggle)
+    keyboard.add_hotkey('alt+q', on_quit)
+    
+    while running:
+        # Process window events (required for display to update)
+        cv.waitKey(10)
         
         ret, frame = cap.read()
         if not ret:
@@ -98,13 +104,14 @@ def main():
         # Display current mode
         cv.putText(image, f"Mode: {mode_name}", (10, h - 20),
                    cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 0), 2)
-        cv.putText(image, "Press 'R' to toggle", (10, h - 50),
+        cv.putText(image, "Alt+R: toggle cursor mode | Alt+Q: quit", (10, h - 50),
                    cv.FONT_HERSHEY_SIMPLEX, 0.5, (200, 200, 200), 1)
             
         cv.imshow(WINDOW_NAME, image)
         make_window_always_on_top(WINDOW_NAME)
   
     keyboard.remove_hotkey('alt+r')
+    keyboard.remove_hotkey('alt+q')
     computer.stop_all_actions()
     cap.release()
     cv.destroyAllWindows()
