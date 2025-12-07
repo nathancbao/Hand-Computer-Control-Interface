@@ -5,7 +5,15 @@ from gestures import Gesture
 
 # Platform detection and imports for raw mouse movement
 IS_WINDOWS = platform.system() == 'Windows'
-# IS_MAC = platform.system() == 'Darwin'
+IS_MAC = platform.system() == "Darwin"
+
+if IS_MAC:
+    from Quartz.CoreGraphics import (
+        CGEventCreateMouseEvent,
+        CGEventPost,
+        kCGHIDEventTap,
+        kCGEventMouseMoved
+    )
 
 if IS_WINDOWS:
     try:
@@ -14,16 +22,22 @@ if IS_WINDOWS:
         HAS_WIN32 = True
     except ImportError:
         HAS_WIN32 = False
-        print("Warning: pywin32 not available, using pynput for mouse control")
+        print("Warning: pywin32 not available, using pyautogui for mouse control")
+        
+def mac_move_relative(dx, dy):
+    # Create relative mouse movement event
+    event = CGEventCreateMouseEvent(
+        None,
+        kCGEventMouseMoved,
+        (0, 0),  # ignored when using relative mode
+        0
+    )
+    # Set relative movement fields
+    event.setIntegerValueField_(0x0000000D, dx)  # kCGMouseEventDeltaX
+    event.setIntegerValueField_(0x0000000E, dy)  # kCGMouseEventDeltaY
 
-# pynput for cross-platform mouse control (fallback or Mac)
-try:
-    from pynput.mouse import Controller as MouseController
-    mouse_controller = MouseController()
-    HAS_PYNPUT = True
-except ImportError:
-    HAS_PYNPUT = False
-    print("Warning: pynput not available, relative mode may not work properly")
+    CGEventPost(kCGHIDEventTap, event)
+
     
 class ComputerController:
     def __init__(self):
@@ -77,12 +91,11 @@ class ComputerController:
                     if IS_WINDOWS and HAS_WIN32:
                         # Windows: Use win32api for true raw input
                         win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, dx, dy, 0, 0)
-                    elif HAS_PYNPUT:
-                        # Mac/Linux or Windows fallback: Use pynput for relative movement
-                        current_pos = mouse_controller.position
-                        mouse_controller.position = (current_pos[0] + dx, current_pos[1] + dy)
+                    elif IS_MAC:
+                        # Mac: Use Quartz CoreGraphics for raw input
+                        mac_move_relative(dx, dy)
                     else:
-                        # Final fallback to pyautogui
+                        # Linux or fallback: Use pyautogui
                         pyautogui.moveRel(dx, dy, _pause=False)
 
                 self.prev_x = centered_x
