@@ -1,4 +1,5 @@
 # Control computer given action
+import pyautogui
 import pydirectinput
 import win32api
 import win32con
@@ -103,13 +104,13 @@ class ComputerController:
         # Hold Left Click (POINT)
         if gesture == "point":
             if not self.left_down:
-                win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
+                pyautogui.mouseDown(button='left')
                 self.left_down = True
 
         # Hold Right Click (PEACE)
         if gesture == "peace":
             if not self.right_down:
-                win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTDOWN, 0, 0)
+                pyautogui.mouseDown(button='right')
                 self.right_down = True
 
         # Neutral, Release Everything (FIST)
@@ -118,24 +119,21 @@ class ComputerController:
 
         # Scroll (THUMBS_UP / THUMBS_DOWN)
         if gesture == "thumbs_up":
-            win32api.mouse_event(win32con.MOUSEEVENTF_WHEEL, 0, 0, 120)
+            pyautogui.scroll(40)
         elif gesture == "thumbs_down":
-            win32api.mouse_event(win32con.MOUSEEVENTF_WHEEL, 0, 0, -120)
+            pyautogui.scroll(-40)
 
         #double left click
         if gesture =="five":
             if self.left_down:
-                win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
+                pyautogui.mouseUp(button='left')
                 self.left_down = False
             if self.right_down:
-                win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTUP, 0, 0)
+                pyautogui.mouseUp(button='right')
                 self.right_down = False
 
             # perform a double left click
-            win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
-            win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
-            win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0)
-            win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
+            pyautogui.click(button='left', clicks=2, interval=0.1)
     
     def toggle_mode(self):
         """Toggle between relative (game) and absolute (desktop) mouse mode"""
@@ -150,9 +148,9 @@ class ComputerController:
         self.prev_x = None  # reset smoothing
 
         if self.left_down:
-            win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0)
+            pyautogui.mouseUp(button='left')
             self.left_down = False
 
         if self.right_down:
-            win32api.mouse_event(win32con.MOUSEEVENTF_RIGHTUP, 0, 0)
+            pyautogui.mouseUp(button='right')
             self.right_down = False
