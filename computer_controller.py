@@ -1,13 +1,33 @@
 # Control computer given action
 import pyautogui
-import pydirectinput
-import win32api
-import win32con
+import platform
 from gestures import Gesture
+
+# Platform detection and imports for raw mouse movement
+IS_WINDOWS = platform.system() == 'Windows'
+# IS_MAC = platform.system() == 'Darwin'
+
+if IS_WINDOWS:
+    try:
+        import win32api
+        import win32con
+        HAS_WIN32 = True
+    except ImportError:
+        HAS_WIN32 = False
+        print("Warning: pywin32 not available, using pynput for mouse control")
+
+# pynput for cross-platform mouse control (fallback or Mac)
+try:
+    from pynput.mouse import Controller as MouseController
+    mouse_controller = MouseController()
+    HAS_PYNPUT = True
+except ImportError:
+    HAS_PYNPUT = False
+    print("Warning: pynput not available, relative mode may not work properly")
     
 class ComputerController:
     def __init__(self):
-        pydirectinput.FAILSAFE = False
+        pyautogui.FAILSAFE = False
         self.left_down = False
         self.right_down = False
 
@@ -52,9 +72,18 @@ class ComputerController:
                 dx = int(centered_x * SENSITIVITY)
                 dy = int(centered_y * SENSITIVITY)
 
-                # Use relative mouse movement for in-game camera control
+                # Use platform-specific raw mouse movement
                 if dx != 0 or dy != 0:
-                    win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, dx, dy, 0, 0)
+                    if IS_WINDOWS and HAS_WIN32:
+                        # Windows: Use win32api for true raw input
+                        win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, dx, dy, 0, 0)
+                    elif HAS_PYNPUT:
+                        # Mac/Linux or Windows fallback: Use pynput for relative movement
+                        current_pos = mouse_controller.position
+                        mouse_controller.position = (current_pos[0] + dx, current_pos[1] + dy)
+                    else:
+                        # Final fallback to pyautogui
+                        pyautogui.moveRel(dx, dy, _pause=False)
 
                 self.prev_x = centered_x
                 self.prev_y = centered_y
@@ -62,8 +91,7 @@ class ComputerController:
             else:
                 # ABSOLUTE MODE (for desktop use)
                 # Map to screen coords with expanded range
-                screen_w = win32api.GetSystemMetrics(0)
-                screen_h = win32api.GetSystemMetrics(1)
+                screen_w, screen_h = pyautogui.size()
                 
                 # Remap from camera range to larger virtual range, then clamp
                 # Adjust EXPANSION_FACTOR: higher = less hand movement needed
@@ -95,8 +123,8 @@ class ComputerController:
                     mouse_x = int(self.prev_x * (1-SMOOTHING) + mouse_x * SMOOTHING)
                     mouse_y = int(self.prev_y * (1-SMOOTHING) + mouse_y * SMOOTHING)
 
-                # Use absolute positioning
-                win32api.SetCursorPos((mouse_x, mouse_y))
+                # Use absolute positioning (cross-platform)
+                pyautogui.moveTo(mouse_x, mouse_y, _pause=False)
 
                 self.prev_x = mouse_x
                 self.prev_y = mouse_y

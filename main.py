@@ -1,5 +1,4 @@
 import cv2 as cv
-import win32gui, win32con
 import keyboard
 from hand_tracking import HandTracker
 from gestures import Gesture, GESTURE_MAP
@@ -14,16 +13,6 @@ NUM_GESTURES = len(GESTURE_MAP)
 hand_tracker = HandTracker()
 classifier = KeyPointClassifier(NUM_GESTURES)
 computer = ComputerController()
-
-def make_window_always_on_top(window_name="Hand Gesture Control"):
-    hwnd = win32gui.FindWindow(None, window_name)
-    if hwnd:
-        win32gui.SetWindowPos(
-            hwnd,
-            win32con.HWND_TOPMOST,
-            0, 0, 0, 0,
-            win32con.SWP_NOMOVE | win32con.SWP_NOSIZE
-        )
     
 def process_image(image):
     hands = hand_tracker.get_landmarks(image)
@@ -108,7 +97,6 @@ def main():
                    cv.FONT_HERSHEY_SIMPLEX, 0.5, (200, 200, 200), 1)
             
         cv.imshow(WINDOW_NAME, image)
-        make_window_always_on_top(WINDOW_NAME)
   
     keyboard.remove_hotkey('alt+r')
     keyboard.remove_hotkey('alt+q')

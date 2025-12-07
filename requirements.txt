@@ -4,7 +4,7 @@ torchvision
 opencv-python
 numpy
 pyautogui
-pydirectinput
-pywin32
+pynput
 keyboard
 Pillow
+pywin32; sys_platform == 'win32'
