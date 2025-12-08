@@ -45,6 +45,9 @@ def main():
     # Create resizable window
     cv.namedWindow(WINDOW_NAME, cv.WINDOW_NORMAL)
     
+    # Set window to stay on top but allow click-through to other windows
+    cv.setWindowProperty(WINDOW_NAME, cv.WND_PROP_TOPMOST, 1)
+    
     # Global hotkey handler for toggling mode
     def on_toggle():
         nonlocal mode_name
