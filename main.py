@@ -45,9 +45,15 @@ def main():
     # Create resizable window
     cv.namedWindow(WINDOW_NAME, cv.WINDOW_NORMAL)
     
-    # Set initial window size and position
-    cv.resizeWindow(WINDOW_NAME, 640, 480)
-    cv.moveWindow(WINDOW_NAME, 100, 100)
+    # Set window size and position in bottom-right corner
+    import pyautogui
+    screen_width, screen_height = pyautogui.size()
+    window_width, window_height = 480, 360
+    x_position = screen_width - window_width - 20
+    y_position = screen_height - window_height - 60
+    
+    cv.resizeWindow(WINDOW_NAME, window_width, window_height)
+    cv.moveWindow(WINDOW_NAME, x_position, y_position)
     
     # Set window to stay on top but allow click-through to other windows
     cv.setWindowProperty(WINDOW_NAME, cv.WND_PROP_TOPMOST, 1)
