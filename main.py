@@ -45,6 +45,10 @@ def main():
     # Create resizable window
     cv.namedWindow(WINDOW_NAME, cv.WINDOW_NORMAL)
     
+    # Set initial window size and position
+    cv.resizeWindow(WINDOW_NAME, 640, 480)
+    cv.moveWindow(WINDOW_NAME, 100, 100)
+    
     # Set window to stay on top but allow click-through to other windows
     cv.setWindowProperty(WINDOW_NAME, cv.WND_PROP_TOPMOST, 1)
     
