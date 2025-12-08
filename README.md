@@ -63,10 +63,9 @@ python main.py
 
 ### Tips
 
--   **Position your hand** in the center of the camera frame for best tracking, not too far away and not too
+-   **Position your hand** in the center of the camera frame for best tracking, not too far away and not too close
 -   **Adjust window size/position**: The window is resizable/moveable - make it smaller and position it in a corner so you can see it while working
 -   **Gaming mode**: Switch to Relative mode (Alt+R) for better camera control in games
--   **Sensitivity**: You can adjust sensitivity, deadzone, and smoothing values in `computer_controller.py`
 
 ## Configuration
 
