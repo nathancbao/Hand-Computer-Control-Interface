@@ -4,6 +4,11 @@ Control your computer using hand gestures captured by your webcam! This project 
 
 ![Interface Window](interface-window.png)
 
+## Links
+- [Presentation + Demo Video](https://www.youtube.com/watch?v=sKuA4ksM-fo)
+- [Report](Report.pdf)
+- [Presentation Slides](PresentationSlides.pdf)
+
 ## Features
 
 -   **Real-time hand tracking** using MediaPipe
